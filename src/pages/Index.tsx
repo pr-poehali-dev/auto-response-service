@@ -8,6 +8,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
 
 const Index = () => {
@@ -17,6 +27,16 @@ const Index = () => {
     text: "Товар хороший, но доставка задержалась на 2 дня",
     response: "Благодарим за отзыв! Рады, что товар вам понравился. Приносим извинения за задержку доставки — мы передали информацию логистической службе для улучшения сервиса. Будем рады видеть вас снова! 🎁"
   });
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: "", phone: "" });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Запись на демо:", formData);
+    setIsDialogOpen(false);
+    setFormData({ name: "", phone: "" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -365,7 +385,12 @@ const Index = () => {
               <Icon name="Rocket" size={20} className="mr-2" />
               Начать бесплатно
             </Button>
-            <Button size="lg" variant="outline" className="border-primary/30 hover:bg-primary/10">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-primary/30 hover:bg-primary/10"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Icon name="Calendar" size={20} className="mr-2" />
               Записаться на демо
             </Button>
@@ -422,6 +447,61 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-sm border-primary/20">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Записаться на демо</DialogTitle>
+            <DialogDescription>
+              Оставьте свои контакты, и мы свяжемся с вами для демонстрации возможностей ReviewAI
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Имя</Label>
+                <Input
+                  id="name"
+                  placeholder="Введите ваше имя"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                  className="border-primary/20 focus:border-primary"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Телефон</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+7 (999) 123-45-67"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  required
+                  className="border-primary/20 focus:border-primary"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                className="border-primary/20"
+              >
+                Отменить
+              </Button>
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-primary to-secondary"
+              >
+                <Icon name="Calendar" size={16} className="mr-2" />
+                Записаться
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
